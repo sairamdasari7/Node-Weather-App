@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Information Service</title>
+  <link rel="icon" href="favicon.ico" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Weather Information Service</h1>
+  <input type="text" id="city" placeholder="Enter city name">
+  <button onclick="fetchWeather()">Get Weather</button>
+  <div id="weatherInfo"></div>
+
+  <script>
+    async function fetchWeather() {
+      const city = document.getElementById('city').value;
+      if (!city) {
+        alert('Please enter a city name');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/weather?city=${city}`);
+        const data = await response.json();
+        if (response.status !== 200) {
+          document.getElementById('weatherInfo').innerText = data;
+        } else {
+          document.getElementById('weatherInfo').innerText = `
+            Weather in ${data.name}, ${data.sys.country}:
+            Temperature: ${data.main.temp}°C
+            Weather: ${data.weather[0].description}
+            Humidity: ${data.main.humidity}%
+            Wind Speed: ${data.wind.speed} m/s
+            Pressure: ${data.main.pressure} hPa
+          `;
+        }
+      } catch (error) {
+        document.getElementById('weatherInfo').innerText = 'Error fetching weather data';
+      }
+    }
+  </script>
+</body>
+</html>
